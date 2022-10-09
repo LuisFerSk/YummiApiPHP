@@ -1,247 +1,107 @@
-const { Router } = require('express');
+<?php
 
-const Periferico = require('../model/periferico');
-const Response = require('../model/response');
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['periferico_table']);
+        $perifericoController = new PerifericoController($dbController);
 
-const DB = require('../data/db');
-const PerifericoData = require('../data/perifericoData');
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-const { verificarUser, verificarAdmin, decodeToken } = require('../middleware/authjwt');
-const config = require('../config');
-const xl = require('excel4node');
-const path = require('path');
-const LogData = require('../data/logData');
-
-const router = Router();
-const routerBase = '/api/periferico';
-
-const db = new DB(config.DB.PERIFERICO_TABLE);
-const logTable = new DB(config.DB.LOG_TABLE);
-
-function generateExcelPerifericos(props) {
-    const { perifericos, pageName } = props;
-
-    const workbook = new xl.Workbook();
-    const worksheet = workbook.addWorksheet(pageName);
-
-    worksheet.cell(1, 1).string('Id');
-    worksheet.cell(1, 2).string('Tipo de dispositivo');
-    worksheet.cell(1, 3).string('Referencia');
-    worksheet.cell(1, 4).string('Número serial');
-    worksheet.cell(1, 5).string('Estado');
-    worksheet.cell(1, 6).string('Observaciones');
-    worksheet.cell(1, 7).string('Fecha de creación');
-    worksheet.cell(1, 8).string('Ultima actualización');
-
-    perifericos.map((periferico, key) => {
-        const create_time = new Date(periferico.create_time);
-
-        const numberRow = key + 2;
-
-        if (periferico.update_time) {
-            const update_time = new Date(periferico.update_time);
-            worksheet.cell(numberRow, 8).date(update_time);
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
         }
 
-        if (periferico.observaciones) {
-            worksheet.cell(numberRow, 6).string(periferico.observaciones);
-        }
+        $response = $perifericoController->getAll();
 
-        worksheet.cell(numberRow, 1).number(periferico.id);
-        worksheet.cell(numberRow, 2).string(periferico.tipo_dispositivo);
-        worksheet.cell(numberRow, 3).string(periferico.referenciaPeriferico);
-        worksheet.cell(numberRow, 4).string(periferico.numeroSerial);
-        worksheet.cell(numberRow, 5).string(periferico.estado);
-        worksheet.cell(numberRow, 7).date(create_time);
-    })
-
-    return workbook;
+        Response::sendResponse($response);
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return;
 }
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['periferico_table']);
+        $perifericoModel = new Periferico();
+        $perifericoController = new PerifericoController($dbController, $perifericoModel);
 
-router.get(`${routerBase}/excel/all`, verificarUser, async (req, res) => {
-    const perifericoData = new PerifericoData(db);
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-    perifericoData.getAllForExcel()
-        .then(result => {
-            if (result.status === 200) {
-                const propsGenerateExcel = {
-                    perifericos: result.data,
-                    pageName: 'Periféricos'
-                }
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
 
-                const workbook = generateExcelPerifericos(propsGenerateExcel)
+        $response = $perifericoController->insert($_POST, $headers['token']);
 
-                const pathExcel = path.join('excel', 'periféricos.xlsx');
-
-                workbook.write(pathExcel, (err) => {
-                    if (err) {
-                        console.log(err)
-                        return;
-                    }
-                    res.download(pathExcel);
-                });
-                return;
-            }
-            Response.sendResponse(result, res);
-        })
-});
-router.get(`${routerBase}/excel/by-tipo-dispositivo/:id`, verificarUser, async (req, res) => {
-    const perifericoData = new PerifericoData(db);
-
-    const { id } = req.params;
-
-    perifericoData.getAllByTipo(id)
-        .then(result => {
-            if (result.status === 200) {
-                const propsGenerateExcel = {
-                    perifericos: result.data,
-                    pageName: 'Periféricos'
-                }
-
-                const workbook = generateExcelPerifericos(propsGenerateExcel)
-
-                const pathExcel = path.join('excel', `periféricos-tipo-dispositivo-${id}.xlsx`);
-
-                workbook.write(pathExcel, (err) => {
-                    if (err) {
-                        console.log(err)
-                        return;
-                    }
-                    res.download(pathExcel);
-                });
-                return;
-            }
-            Response.sendResponse(result, res);
-        })
-});
-router.get(routerBase, verificarUser, (req, res) => {
-    const perifericoData = new PerifericoData(db);
-
-    perifericoData.getAll()
-        .then(result => {
-            Response.sendResponse(result, res);
-        })
-});
-router.get(`${routerBase}/count`, verificarUser, (req, res) => {
-    const perifericoData = new PerifericoData(db);
-
-    perifericoData.count()
-        .then(result => {
-            Response.sendResponse(result, res);
-        })
-})
-router.post(routerBase, verificarUser, (req, res) => {
-    const periferico = new Periferico();
-    const perifericoData = new PerifericoData(db, periferico);
-
-    const {
-        tipo_dispositivo,
-        referenciaPeriferico,
-        numeroSerial,
-        estado,
-        observaciones
-    } = req.body;
-
-    const dataToInsert = {
-        tipo_dispositivo,
-        referenciaPeriferico,
-        numeroSerial,
-        estado,
-        observaciones
+        Response::sendResponse($response);
+        return $found = true;
     }
+    Response::sendResponse(new Response(401, 'El token es obligatorio.'));
+}
+if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['periferico_table']);
+        $perifericoModel = new Periferico();
+        $perifericoController = new PerifericoController($dbController, $perifericoModel);
 
-    perifericoData.insert(dataToInsert)
-        .then(result => {
-            const resultDecodeToken = decodeToken(req)
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-            const dataForLog = {
-                usuario: resultDecodeToken.data.username,
-                id_usuario: resultDecodeToken.data.id,
-                accion: 'Registrar',
-                tabla: config.DB.PERIFERICO_TABLE,
-                datos: JSON.stringify({ id: result.data.id, ...dataToInsert })
-            }
-            const logData = new LogData(logTable);
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
 
-            logData.insert(dataForLog).then(() => {
-                Response.sendResponse(result, res);
-            })
-        })
-        .catch(err => {
-            console.log(err)
-            Response.sendResponse(err, res)
-        })
-});
-router.put(`${routerBase}/:id`, verificarUser, (req, res) => {
-    const periferico = new Periferico();
-    const perifericoData = new PerifericoData(db, periferico);
+        $response = $perifericoController->update($_PUT['id'], $_PUT, $headers['token']);
 
-    const { id } = req.params;
-
-    const {
-        tipo_dispositivo,
-        referenciaPeriferico,
-        numeroSerial,
-        estado,
-        observaciones
-    } = req.body;
-
-    const dataToUpdate = {
-        tipo_dispositivo,
-        referenciaPeriferico,
-        numeroSerial,
-        estado,
-        observaciones
+        Response::sendResponse($response);
+        return $found = true;
     }
+    Response::sendResponse(new Response(401, 'El token es obligatorio.'));
+}
+if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['periferico_table']);
+        $Periferico = new Periferico();
+        $perifericoController = new PerifericoController($dbController, $Periferico);
 
-    perifericoData.update(parseInt(id), dataToUpdate)
-        .then(result => {
-            const resultDecodeToken = decodeToken(req)
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-            const dataForLog = {
-                usuario: resultDecodeToken.data.username,
-                id_usuario: resultDecodeToken.data.id,
-                accion: 'Actualizar',
-                tabla: config.DB.PERIFERICO_TABLE,
-                datos: JSON.stringify({ id: result.data.id, ...dataToUpdate })
-            }
-            const logData = new LogData(logTable);
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
+            return $found = true;
+        }
 
-            logData.insert(dataForLog).then(() => {
-                Response.sendResponse(result, res);
-            })
-        })
-        .catch(err => {
-            Response.sendResponse(err, res)
-        })
-})
-router.delete(`${routerBase}/:id`, verificarAdmin, (req, res) => {
-    const periferico = new Periferico();
-    const perifericoData = new PerifericoData(db, periferico);
+        $response = $perifericoController->delete($_PUT['id'], $headers['token']);
 
-    const { id } = req.params;
+        Response::sendResponse($response);
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return $found = true;
+}
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico/count') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['periferico_table']);
+        $perifericoController = new PerifericoController($dbController);
 
-    perifericoData.delete(parseInt(id))
-        .then(result => {
-            const resultDecodeToken = decodeToken(req)
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-            const dataForLog = {
-                usuario: resultDecodeToken.data.username,
-                id_usuario: resultDecodeToken.data.id,
-                accion: 'Eliminar',
-                tabla: config.DB.PERIFERICO_TABLE, usuario: resultDecodeToken.data.username,
-                id_usuario: resultDecodeToken.data.id,
-                datos: JSON.stringify({ id })
-            }
-            const logData = new LogData(logTable);
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
 
-            logData.insert(dataForLog).then(() => {
-                Response.sendResponse(result, res);
-            })
-        })
-        .catch(err => {
-            Response.sendResponse(err, res)
-        })
-})
+        $response = $perifericoController->count();
 
-module.exports = router;
+        Response::sendResponse($response);
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return;
+}

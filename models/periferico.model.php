@@ -19,6 +19,9 @@ class Periferico extends Entity
         if (!isset($tipo_dispositivo)) {
             return "Se debe especificar el tipo de dispositivo.";
         }
+        if ($tipo_dispositivo !== 1 && $tipo_dispositivo !== 2 && $tipo_dispositivo !== 3 && $tipo_dispositivo !== 4) {
+            return 'El estado no es valido, no se encuentra dentro las opciones permitidas (1-4).';
+        }
         $this->tipo_dispositivo = $tipo_dispositivo;
         return 'El tipo de dispositivo es correcto.';
     }
@@ -96,27 +99,27 @@ class Periferico extends Entity
     }
     public function setPeriferico($periferico)
     {
-        $resultSetDispositivo = $this->periferico->setDispositivo($periferico['tipo_dispositivo']);
+        $resultSetDispositivo = $this->setDispositivo(intval($periferico['tipo_dispositivo']));
         if ($resultSetDispositivo != 'El tipo de dispositivo es correcto.') {
             return $resultSetDispositivo;
         }
 
-        $resultSetReferencia = $this->periferico->setReferencia($periferico['referenciaPeriferico']);
+        $resultSetReferencia = $this->setReferencia($periferico['referenciaPeriferico']);
         if ($resultSetReferencia != 'La referencia es correcto.') {
             return $resultSetReferencia;
         }
 
-        $resultSetNumeroSerial = $this->periferico->setNumeroSerial($periferico['numeroSerial']);
-        if ($resultSetNumeroSerial != 'La referencia ${numeroSerial} es correcto.') {
+        $resultSetNumeroSerial = $this->setNumeroSerial($periferico['numeroSerial']);
+        if ($resultSetNumeroSerial != 'La referencia es correcto.') {
             return $resultSetNumeroSerial;
         }
 
-        $resultSetEstado = $this->periferico->setEstado($periferico['estado']);
-        if ($resultSetEstado != 'El estado, ${estado} es correcto.') {
+        $resultSetEstado = $this->setEstado(intval($periferico['estado']));
+        if ($resultSetEstado != 'El estado es correcto.') {
             return $resultSetEstado;
         }
 
-        $resultSetObservaciones = $this->periferico->setObservaciones($periferico['observaciones']);
+        $resultSetObservaciones = $this->setObservaciones($periferico['observaciones']);
         if ($resultSetObservaciones != 'La observación es correcta.') {
             return $resultSetObservaciones;
         }

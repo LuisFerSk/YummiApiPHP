@@ -13,6 +13,7 @@ include "usuario.php";
 include "authentication.php";
 include "equipo.php";
 include "funcionario.php";
+include "periferico.php";
 
 if (!$found) {
     $json = [

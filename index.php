@@ -5,11 +5,13 @@ include_once 'controllers/db.controller.php';
 include_once 'controllers/usuario.controller.php';
 include_once 'controllers/equipo.controller.php';
 include_once 'controllers/funcionario.controller.php';
+include_once 'controllers/periferico.controller.php';
 
 include_once 'models/response.model.php';
 include_once 'models/usuario.model.php';
 include_once 'models/equipo.model.php';
 include_once 'models/funcionario.model.php';
+include_once 'models/periferico.model.php';
 
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);

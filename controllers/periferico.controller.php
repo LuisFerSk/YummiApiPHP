@@ -38,14 +38,14 @@ class PerifericoController
     {
         $sql = "SELECT perifericos.id,tipo_dispositivos.nombre AS tipo_dispositivo, tipo_dispositivos.id AS id_tipo_dispositivo, perifericos.referenciaPeriferico, perifericos.numeroSerial, perifericos.estado, perifericos.observaciones, perifericos.create_time, perifericos.update_time FROM perifericos LEFT JOIN tipo_dispositivos ON perifericos.tipo_dispositivo = tipo_dispositivos.id";
 
-        try {
-            $data = $this->dbController->execute($sql);
-            $message = 'Los equipos se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los equipos.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->getAll();
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los perifericos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+        $message = 'Los perifericos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data);
     }
     public function getActived()
     {
@@ -70,85 +70,101 @@ class PerifericoController
             return new Response(400, $message, $error);
         }
     }
-    public function insert($periferico)
+    public function insert($periferico, $token)
     {
-        $resultSetPeriferico = $this->periferico->setPeriferico($periferico);
+        $resultSetPeriferico = $this->perifericoModel->setPeriferico($periferico);
         if ($resultSetPeriferico != 'El periferico es correcto.') {
             return new Response(400, $resultSetPeriferico);
         }
 
         $dataToInsert = [
-            "tipo_dispositivo" => $this->periferico->tipo_dispositivo,
-            "referenciaPeriferico" => $this->periferico->referenciaPeriferico,
-            "numeroSerial" => $this->periferico->numeroSerial,
-            "estado" => $this->periferico->estado,
-            "observaciones" => $this->periferico->observaciones
+            "tipo_dispositivo" => $this->perifericoModel->tipo_dispositivo,
+            "referenciaPeriferico" => $this->perifericoModel->referenciaPeriferico,
+            "numeroSerial" => $this->perifericoModel->numeroSerial,
+            "estado" => $this->perifericoModel->estado,
+            "observaciones" => $this->perifericoModel->observaciones
         ];
 
-        try {
-            $result = $this->dbController->insert($dataToInsert);
-            $message = 'El periferico se ha insertado correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al insertar el periferico.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->insert($dataToInsert, $token);
+
+        if ($result->status != 200) {
+            $message = 'No se ha podido registrado el periferico: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $get = $this->dbController->getById($result->data);
+
+        $message = 'Se ha registrado el periferico correctamente.';
+
+        if ($get->status == 200) {
+            return new Response($result->status, $message, $get->data);
+        }
+
+        $dataToInsert['id'] = $result->data;
+
+        return new Response($result->status, $message, $dataToInsert);
     }
-    public function update($id, $periferico)
+    public function update($id, $periferico, $token)
     {
-        $resultSetId = $this->periferico->setId($id);
+        $resultSetId = $this->perifericoModel->setId($id);
         if ($resultSetId != 'El id es correcto.') {
             return new Response(400, $resultSetId);
         }
 
-        $resultSetPeriferico = $this->periferico->setPeriferico($periferico);
+        $resultSetPeriferico = $this->perifericoModel->setPeriferico($periferico);
         if ($resultSetPeriferico != 'El periferico es correcto.') {
             return new Response(400, $resultSetPeriferico);
         }
 
-        $newData = [
-            "tipo_dispositivo" => $this->periferico->tipo_dispositivo,
-            "referenciaPeriferico" => $this->periferico->referenciaPeriferico,
-            "numeroSerial" => $this->periferico->numeroSerial,
-            "estado" => $this->periferico->estado,
-            "observaciones" => $this->periferico->observaciones,
-            "update_time" => $this->periferico->update_time
+        $dataToUpdate = [
+            "tipo_dispositivo" => $this->perifericoModel->tipo_dispositivo,
+            "referenciaPeriferico" => $this->perifericoModel->referenciaPeriferico,
+            "numeroSerial" => $this->perifericoModel->numeroSerial,
+            "estado" => $this->perifericoModel->estado,
+            "observaciones" => $this->perifericoModel->observaciones,
+            "update_time" => $this->perifericoModel->update_time
         ];
 
-        try {
-            $result = $this->dbController->update($this->periferico->id, $newData);
-            $message = 'Se ha actualizado la información del periferico correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al actualizar la información del periferico.';
-            return new Response(400, $message, $error);
-        }
-    }
-    public function delete($id)
-    {
-        $resultSetId = $this->periferico->setId($id);
-        if ($resultSetId != 'El id es correcto.') {
-            return new Response(400, $resultSetId);
+        $result = $this->dbController->update($id, $dataToUpdate, $token);
+
+        if ($result->status == 404) {
+            $message = 'No se ha encontrado el periferico.';
+            return new Response($result->status, $message);
         }
 
-        try {
-            $result = $this->dbController->delete($this->periferico->id);
-            $message = 'El periferico se ha eliminado correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al eliminar el periferico.';
-            return new Response(400, $message, $error);
+        if ($result->status != 200) {
+            $message = 'No se ha podido actualizar la información del periferico: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'Se ha actualizado la información del periferico correctamente.';
+        return new Response(200, $message);
+    }
+    public function delete($id, $token)
+    {
+        $resultId = $this->perifericoModel->setId($id);
+        if ($resultId != 'El id es correcto.') {
+            return new Response(400, $resultId);
+        }
+
+        $result = $this->dbController->delete($id, $token);
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al eliminar el periferico: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
+
+        $message = 'El periferico se ha eliminado correctamente.';
+        return new Response(200, $message);
     }
     public function count()
     {
-        try {
-            $result = $this->dbController->count();
-            $message = 'El total de perifericos se ha obtenido correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener el total de perifericos.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->count();
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener el total de perifericos: ' . $result->message;
+            return new Response($result->status, $message, $result->data);
         }
+        $message = 'El total de perifericos se ha obtenido correctamente.';
+        return new Response($result->status, $message, $result->data);
     }
 }
