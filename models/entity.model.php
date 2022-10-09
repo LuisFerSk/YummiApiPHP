@@ -6,7 +6,7 @@ class Entity
     {
         $this->id = null;
         $this->create_time = null;
-        $this->update_time = date('m-d-Y h:i:s a', time());
+        $this->update_time = date('Y-m-d H:i:s', time());
     }
 
     public function setId($id)

@@ -743,3 +743,117 @@ Stack trace:
 #3 C:\xampp\htdocs\YummiApiPHP\index.php(13): include('C:\\xampp\\htdocs...')
 #4 {main}
   thrown in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 60
+[08-Oct-2022 17:39:08 Europe/Berlin] PHP Notice:  Undefined index: id in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 86
+[08-Oct-2022 17:39:08 Europe/Berlin] PHP Notice:  Undefined index: password in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 86
+[08-Oct-2022 17:39:08 Europe/Berlin] PHP Notice:  Undefined property: UsuarioController::$usuario in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 121
+[08-Oct-2022 17:39:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function setId() on null in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php:121
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(86): UsuarioController->updatePassword(NULL, NULL)
+#1 C:\xampp\htdocs\YummiApiPHP\routes\index.php(26): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 121
+[08-Oct-2022 17:39:26 Europe/Berlin] PHP Notice:  Undefined variable: _PUT in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 86
+[08-Oct-2022 17:39:26 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 86
+[08-Oct-2022 17:39:26 Europe/Berlin] PHP Notice:  Undefined variable: _PUT in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 86
+[08-Oct-2022 17:39:26 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 86
+[08-Oct-2022 17:39:26 Europe/Berlin] PHP Notice:  Undefined property: UsuarioController::$usuario in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 121
+[08-Oct-2022 17:39:26 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function setId() on null in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php:121
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(86): UsuarioController->updatePassword(NULL, NULL)
+#1 C:\xampp\htdocs\YummiApiPHP\routes\index.php(26): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 121
+[08-Oct-2022 17:42:36 Europe/Berlin] PHP Notice:  Undefined property: UsuarioController::$usuario in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 121
+[08-Oct-2022 17:42:36 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function setId() on null in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php:121
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(88): UsuarioController->updatePassword('14', 'f3rn4nd0')
+#1 C:\xampp\htdocs\YummiApiPHP\routes\index.php(26): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 121
+[08-Oct-2022 17:43:23 Europe/Berlin] PHP Notice:  Trying to get property 'message' of non-object in C:\xampp\htdocs\YummiApiPHP\models\response.model.php on line 15
+[08-Oct-2022 17:43:23 Europe/Berlin] PHP Notice:  Trying to get property 'data' of non-object in C:\xampp\htdocs\YummiApiPHP\models\response.model.php on line 16
+[08-Oct-2022 17:43:23 Europe/Berlin] PHP Notice:  Trying to get property 'status' of non-object in C:\xampp\htdocs\YummiApiPHP\models\response.model.php on line 18
+[08-Oct-2022 17:47:36 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Response as array in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php:104
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php(224): DbController::getSqlInsert(Object(Response), 'log_controller')
+#1 C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php(133): DbController->update('14', Array, 'eyJ0eXAiOiJKV1Q...')
+#2 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(86): UsuarioController->updatePassword('14', 'f3rn4nd0', 'eyJ0eXAiOiJKV1Q...')
+#3 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#5 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 104
+[08-Oct-2022 17:51:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Response as array in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php:104
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php(224): DbController::getSqlInsert(Object(Response), 'log_controller')
+#1 C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php(133): DbController->update('14', Array, 'eyJ0eXAiOiJKV1Q...')
+#2 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(86): UsuarioController->updatePassword('14', 'f3rn4nd0', 'eyJ0eXAiOiJKV1Q...')
+#3 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#5 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 104
+[08-Oct-2022 18:18:50 Europe/Berlin] PHP Notice:  Undefined variable: token in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 69
+[08-Oct-2022 18:18:50 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Firebase\JWT\JWT::decode() must be of the type string, null given, called in C:\xampp\htdocs\YummiApiPHP\database\index.php on line 58 and defined in C:\xampp\htdocs\YummiApiPHP\vendor\firebase\php-jwt\src\JWT.php:90
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\database\index.php(58): Firebase\JWT\JWT::decode(NULL, Object(Firebase\JWT\Key))
+#1 C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php(291): DataBase::decode(NULL)
+#2 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(69): DbController->validarToken(NULL)
+#3 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#5 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\vendor\firebase\php-jwt\src\JWT.php on line 90
+[08-Oct-2022 18:19:15 Europe/Berlin] PHP Notice:  Trying to get property 'rol' of non-object in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 76
+[08-Oct-2022 18:20:04 Europe/Berlin] PHP Notice:  Trying to get property 'rol' of non-object in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 76
+[08-Oct-2022 18:20:40 Europe/Berlin] PHP Notice:  Object of class Response could not be converted to int in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 273
+[08-Oct-2022 18:20:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type stdClass as array in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php:104
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php(233): DbController::getSqlInsert(Object(stdClass), 'log_controller')
+#1 C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php(133): DbController->update('14', Array, 'eyJ0eXAiOiJKV1Q...')
+#2 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(76): UsuarioController->updatePassword('14', 'f3rn4nd0', 'eyJ0eXAiOiJKV1Q...')
+#3 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#5 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 104
+[08-Oct-2022 18:20:54 Europe/Berlin] PHP Notice:  Trying to get property 'rol' of non-object in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 75
+[08-Oct-2022 18:21:04 Europe/Berlin] PHP Notice:  Object of class Response could not be converted to int in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 273
+[08-Oct-2022 18:21:04 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type stdClass as array in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php:104
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php(233): DbController::getSqlInsert(Object(stdClass), 'log_controller')
+#1 C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php(133): DbController->update('14', Array, 'eyJ0eXAiOiJKV1Q...')
+#2 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(76): UsuarioController->updatePassword('14', 'f3rn4nd0', 'eyJ0eXAiOiJKV1Q...')
+#3 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#5 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 104
+[08-Oct-2022 18:21:24 Europe/Berlin] PHP Notice:  Undefined offset: 0 in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 311
+[08-Oct-2022 18:21:24 Europe/Berlin] PHP Notice:  Trying to get property 'rol' of non-object in C:\xampp\htdocs\YummiApiPHP\routes\usuario.php on line 75
+[08-Oct-2022 18:21:43 Europe/Berlin] PHP Notice:  Object of class Response could not be converted to int in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 273
+[08-Oct-2022 18:21:43 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type stdClass as array in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php:104
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php(233): DbController::getSqlInsert(Object(stdClass), 'log_controller')
+#1 C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php(133): DbController->update('14', Array, 'eyJ0eXAiOiJKV1Q...')
+#2 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(76): UsuarioController->updatePassword('14', 'f3rn4nd0', 'eyJ0eXAiOiJKV1Q...')
+#3 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#5 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\db.controller.php on line 104
+[08-Oct-2022 18:29:38 Europe/Berlin] PHP Notice:  Undefined property: UsuarioController::$usuario in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 182
+[08-Oct-2022 18:29:38 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function setId() on null in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php:182
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(100): UsuarioController->delete('14')
+#1 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 182
+[08-Oct-2022 18:30:04 Europe/Berlin] PHP Notice:  Undefined property: UsuarioController::$usuario in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 187
+[08-Oct-2022 18:30:04 Europe/Berlin] PHP Notice:  Trying to get property 'id' of non-object in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 187
+[09-Oct-2022 04:28:15 Europe/Berlin] PHP Notice:  Undefined property: UsuarioController::$usuario in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 211
+[09-Oct-2022 04:28:15 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function setId() on null in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php:211
+Stack trace:
+#0 C:\xampp\htdocs\YummiApiPHP\routes\usuario.php(169): UsuarioController->disable('2')
+#1 C:\xampp\htdocs\YummiApiPHP\routes\index.php(29): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\YummiApiPHP\index.php(12): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\YummiApiPHP\controllers\usuario.controller.php on line 211

@@ -1,5 +1,4 @@
 <?php
-
 include_once 'config/index.php';
 include_once 'models/response.model.php';
 include_once 'controllers/db.controller.php';

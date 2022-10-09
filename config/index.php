@@ -32,5 +32,16 @@ class Config
         ]
     ];
 
+    static public $ROLES = [
+        "ADMINISTRADOR" => [
+            "id" => 1,
+            "nombre" => 'Administrador'
+        ],
+        "USUARIO" => [
+            "id" => 2,
+            "nombre" => 'Usuario'
+        ]
+    ];
+
     static public $SECRET = '6d05954d-ec64-4519-a221-8fa96764fa6e';
 }
