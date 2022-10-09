@@ -1,6 +1,6 @@
 <?php
 
-class tipoDispositivoController
+class TipoDispositivoController
 {
     public function __construct($dbController)
     {
@@ -8,13 +8,12 @@ class tipoDispositivoController
     }
     public function getAll()
     {
-        try {
-            $data = $this->dbController->getAll();
-            $message = 'Los tipo de dispositivos se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los tipo de dispositivos.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->getAll();
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los tipo de dispositivos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+        $message = 'Los tipo de dispositivos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data);
     }
 }

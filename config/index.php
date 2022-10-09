@@ -7,8 +7,8 @@ class Config
         "funcionario_table" => 'funcionarios',
         "periferico_table" => 'perifericos',
         "usuario_table" => 'usuarios',
-        "sectorial_table" => 'sectorial',
-        "subsector_table" => 'subsector',
+        "sectorial_table" => 'sectoriales',
+        "subsector_table" => 'subsectores',
         "tipo_dispositivo_table" => 'tipo_dispositivos',
         "log_table" => 'log_controller'
     ];

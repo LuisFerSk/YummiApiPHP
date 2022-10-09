@@ -14,6 +14,7 @@ include "authentication.php";
 include "equipo.php";
 include "funcionario.php";
 include "periferico.php";
+include "sectorial.php";
 
 if (!$found) {
     $json = [

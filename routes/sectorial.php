@@ -1,26 +1,22 @@
-const { Router } = require('express');
+<?php
 
-const Response = require('../model/response');
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'sectorial') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['sectorial_table']);
+        $sectorialController = new SectorialController($dbController);
 
-const DB = require('../data/db');
-const SectorialData = require('../data/sectorialData');
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-const { verificarUser } = require('../middleware/authjwt');
-const config = require('../config');
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
 
-const router = Router();
+        $response = $sectorialController->getAll();
 
-const routerBase = '/api/sectorial';
-
-const db = new DB(config.DB.SECTORIALE_TABLE);
-
-router.get(routerBase, verificarUser, (req, res) => {
-    const sectorialData = new SectorialData(db);
-
-    sectorialData.getAll()
-        .then(result => {
-            Response.sendResponse(result, res);
-        })
-})
-
-module.exports = router;
+        Response::sendResponse($response);
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return;
+}

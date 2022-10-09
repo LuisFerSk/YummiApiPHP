@@ -1,8 +1,6 @@
 <?php
 
-include_once 'models/response.model.php';
-
-class subsectorController
+class SubsectorController
 {
     public function __construct($dbController)
     {
@@ -10,13 +8,12 @@ class subsectorController
     }
     public function getAll()
     {
-        try {
-            $data = $this->dbController->getAll();
-            $message = 'Los subsectores se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los subsectores.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->getAll();
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los subsectores: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+        $message = 'Los subsectores se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data);
     }
 }
