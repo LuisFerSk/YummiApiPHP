@@ -108,58 +108,67 @@ class FuncionarioController
 
         return new Response($result->status, $message, $dataToInsert);
     }
-    public function update($id, $funcionario)
+    public function update($id, $funcionario, $token)
     {
-        $resultSetId = $this->funcionario->setId($id);
+        $resultSetId = $this->funcionarioModel->setId($id);
         if ($resultSetId != 'El id es correcto.') {
             return new Response(400, $resultSetId);
         }
 
-        $resultSetFuncionario = $this->funcionario->setFuncionario($funcionario);
+        $resultSetFuncionario = $this->funcionarioModel->setFuncionario($funcionario);
         if ($resultSetFuncionario != 'El funcionario es correcto.') {
             return new Response(400, $resultSetFuncionario);
         }
 
-        $newData = [
-            "identificacion" => $this->funcionario->identificacion,
-            "nombre" => $this->funcionario->nombre,
-            "sectorial" => $this->funcionario->sectorial,
-            "subsector" => $this->funcionario->subsector,
-            "update_time" =>  $this->functionario->update_time
+        $dataToUpdate = [
+            "identificacion" => $this->funcionarioModel->identificacion,
+            "nombre" => $this->funcionarioModel->nombre,
+            "sectorial" => $this->funcionarioModel->sectorial,
+            "subsector" => $this->funcionarioModel->subsector,
+            "update_time" =>  $this->funcionarioModel->update_time
         ];
-        try {
-            $result = $this->dbController->update($this->funcionario->id, $newData);
-            $message = 'Se ha actualizado el funcionario correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al actualizar el funcionario funcionarios.';
-            return new Response(400, $message, $error);
+
+        $result = $this->dbController->update($id, $dataToUpdate, $token);
+
+        if ($result->status == 404) {
+            $message = 'No se ha encontrado el funcionario.';
+            return new Response($result->status, $message);
         }
+
+        if ($result->status != 200) {
+            $message = 'No se ha podido actualizar la información del funcionario: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
+
+        $message = 'Se ha actualizado la información del funcionario correctamente.';
+        return new Response(200, $message);
     }
-    public function delete($id)
+    public function delete($id, $token)
     {
-        $resultSetId = $this->funcionario->setId($id);
-        if ($resultSetId != 'El id es correcto.') {
-            return new Response(400, $resultSetId);
+        $resultId = $this->funcionarioModel->setId($id);
+        if ($resultId != 'El id es correcto.') {
+            return new Response(400, $resultId);
         }
-        try {
-            $result = $this->dbController->delete($this->funcionario->id);
-            $message = 'El funcionario se ha eliminado correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al eliminar el funcionario.';
-            return new Response(400, $message, $error);
+
+        $result = $this->dbController->delete($id, $token);
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al eliminar el funcionario: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'El funcionario se ha eliminado correctamente.';
+        return new Response(200, $message);
     }
+
     public function count()
     {
-        try {
-            $result = $this->dbController->count();
-            $message = 'El total de funcionario se ha obtenido correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener el total de funcionarios.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->count();
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener el total de funcionarios: ' . $result->message;
+            return new Response($result->status, $message, $result->data);
         }
+        $message = 'El total de funcionarios se ha obtenido correctamente.';
+        return new Response($result->status, $message, $result->data);
     }
 }

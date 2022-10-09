@@ -271,7 +271,7 @@ class DbController extends DataBase
         array_push($values, $id);
 
         return [
-            'sentence' => 'UPDATE ' . $table . ' SET ' . $columns . 'WHERE id = ?',
+            'sentence' => 'UPDATE ' . $table . ' SET ' . $columns . ' WHERE id = ?',
             'values' => $values
         ];
     }
