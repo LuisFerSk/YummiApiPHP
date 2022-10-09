@@ -16,6 +16,7 @@ include "funcionario.php";
 include "periferico.php";
 include "sectorial.php";
 include "subsector.php";
+include "tipoDispositivo.php";
 
 if (!$found) {
     $json = [
