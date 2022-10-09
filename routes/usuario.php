@@ -42,7 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioController = new UsuarioController($dbController);
 
-        $result = $dbController->validarToken($headers['token']);
+        $resultDecodedToken = $dbController->validarToken($headers['token']);
+
+        if ($resultDecodedToken->status != 200) {
+            Response::sendResponse($resultDecodedToken);
+            return $found = true;
+        }
+
+        $result = $usuarioController->getById($resultDecodedToken->data->id);
 
         if ($result->status != 200) {
             Response::sendResponse($result);

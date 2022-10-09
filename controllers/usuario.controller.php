@@ -28,11 +28,11 @@ class UsuarioController
 
         $result = $this->dbController->execute($sql, [$id]);
         if ($result->status != 200) {
-            $message = 'Ha sucedido un error al obtener los equipos.' . strtolower($result->message);
+            $message = 'Ha sucedido un error al obtener la información del usuario.' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
-        $message = 'Los usuarios se han obtenido correctamente.';
+        $message = 'La información del usuario se han obtenido correctamente.';
         return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS)[0]);
     }
 
