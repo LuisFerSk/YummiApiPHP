@@ -82,15 +82,24 @@ class EquipoController
 
         $result = $this->dbController->insert($dataToInsert, $token);
 
-        if (is_array($result)) {
-            $message = 'El equipo se ha insertado correctamente.';
-            return new Response(200, $message, $result);
+        if ($result->status != 200) {
+            $message = 'No se ha podido registrado el equipo.';
+            return new Response($result->status, $message, $result->data);
         }
 
-        $message = 'Ha sucedido un error al insertar el equipo.';
-        return new Response(400, $message, $result);
+        $get = $this->dbController->getById($result->data);
+
+        $message = 'Se ha registrado el equipo correctamente.';
+
+        if ($get->status == 200) {
+            return new Response(200, $message, $get->data);
+        }
+
+        $dataToInsert['id'] = $result->data->id;
+
+        return new Response(200, $message, $dataToInsert);
     }
-    public function update($id, $data)
+    public function update($id, $data, $token)
     {
         $resultSetId = $this->equipoModel->setId($id);
         if ($resultSetId != "El id es correcto.") {
@@ -123,16 +132,20 @@ class EquipoController
             "update_time" => $this->equipoModel->update_time
         ];
 
-        $result = $this->dbController->update($dataToUpdate);
+        $result = $this->dbController->update($id, $dataToUpdate, $token);
 
-        if (!is_object($result) && is_int($result) && $result > 0) {
-            $result = $this->dbController->getById($result);
-            $message = 'El equipo se ha insertado correctamente.';
-            return new Response(200, $message, $result);
+        if ($result->status == 404) {
+            $message = 'No se ha encontrado el equipo.';
+            return new Response($result->status, $message);
         }
 
-        $message = 'Ha sucedido un error al insertar el equipo.';
-        return new Response(400, $message, $result);
+        if ($result->status != 200) {
+            $message = 'No se ha podido actualizar la información del equipo.';
+            return new Response($result->status, $message, $result->data);
+        }
+
+        $message = 'Se ha actualizado la información del equipo correctamente.';
+        return new Response(200, $message);
     }
     public function delete($id)
     {

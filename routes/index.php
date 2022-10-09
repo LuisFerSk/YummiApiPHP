@@ -28,6 +28,7 @@ parse_str(file_get_contents("php://input"), $_PUT);
 
 include "usuario.php";
 include "authentication.php";
+include "equipo.php";
 
 if (!$found) {
     $json = [

@@ -1,9 +1,13 @@
 <?php
 include_once 'config/index.php';
-include_once 'models/response.model.php';
+
 include_once 'controllers/db.controller.php';
 include_once 'controllers/usuario.controller.php';
+include_once 'controllers/equipo.controller.php';
+
+include_once 'models/response.model.php';
 include_once 'models/usuario.model.php';
+include_once 'models/equipo.model.php';
 
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);

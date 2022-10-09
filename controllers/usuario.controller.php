@@ -68,20 +68,22 @@ class UsuarioController
 
         $result = $this->dbController->insertNotToken($dataToInsert);
 
-        if ($result->status == 200) {
-            $get = $this->dbController->getById($result->data);
-
-            $message = 'Se ha registrado al usuario correctamente.';
-
-            if ($get->status == 200) {
-                return new Response(200, $message, $get->data);
-            }
-
-            return new Response(200, $message);
+        if ($result->status != 200) {
+            $message = 'No se ha podido registrado al usuario.';
+            return new Response($result->status, $message, $result->data);
         }
 
-        $message = 'No se ha podido registrado al usuario.';
-        return new Response($result->status, $message, $result->data);
+        $get = $this->dbController->getById($result->data);
+
+        $message = 'Se ha registrado al usuario correctamente.';
+
+        if ($get->status == 200) {
+            return new Response(200, $message, $get->data);
+        }
+
+        $dataToInsert['id'] = $result->data->id;
+
+        return new Response(200, $message, $dataToInsert);
     }
     public function insertAdmin()
     {
@@ -123,6 +125,7 @@ class UsuarioController
         ];
 
         $result = $this->dbController->updateNoToken($id, $dataToUpdate);
+
         if ($result->status == 404) {
             $message = 'No se ha encontrado al usuario.';
             return new Response($result->status, $message);

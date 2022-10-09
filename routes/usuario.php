@@ -23,12 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
             return $found = true;
         }
 
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
+            return $found = true;
+        }
+
         $response = $usuarioController->getAll();
 
         Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 
@@ -48,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
         Response::sendResponse(new Response($result->status, $message, $result->data));
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 
@@ -70,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
         Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 
@@ -87,17 +92,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBas
             return $found = true;
         }
 
-        if ($resultValidarToken->data->rol == Config::$ROLES['ADMINISTRADOR']['id']) {
-            $response = $usuarioController->insert($_POST);
-
-            Response::sendResponse($response);
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
         }
 
-        Response::sendResponse(new Response(400, 'Usted no tiene permisos para realizar esta acción.'));
+        $response = $usuarioController->insert($_POST);
+
+        Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario') {
@@ -113,17 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
             return $found = true;
         }
 
-        if ($resultValidarToken->data->rol == Config::$ROLES['ADMINISTRADOR']['id']) {
-            $response = $usuarioController->updatePassword($_PUT['id'], $_PUT['password']);
-
-            Response::sendResponse($response);
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
         }
 
-        Response::sendResponse(new Response(400, 'Usted no tiene permisos para realizar esta acción.'));
+        $response = $usuarioController->updatePassword($_PUT['id'], $_PUT['password']);
+
+        Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 
@@ -139,16 +144,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
-        if ($resultValidarToken->data->rol == Config::$ROLES['ADMINISTRADOR']['id']) {
-            $response = $usuarioController->delete($_PUT['id']);
-
-            Response::sendResponse($response);
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
         }
-        Response::sendResponse(new Response(400, 'Usted no tiene permisos para realizar esta acción.'));
+
+        $response = $usuarioController->delete($_PUT['id']);
+
+        Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 
@@ -166,16 +172,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
         }
 
         if ($resultValidarToken->data->rol == Config::$ROLES['ADMINISTRADOR']['id']) {
-            $response = $usuarioController->disable($_PUT['id']);
-
-            Response::sendResponse($response);
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
         }
 
-        Response::sendResponse(new Response(400, 'Usted no tiene permisos para realizar esta acción.'));
+        $response = $usuarioController->disable($_PUT['id']);
+
+        Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
 
@@ -192,16 +198,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
             return $found = true;
         }
 
-        if ($resultValidarToken->data->rol == Config::$ROLES['ADMINISTRADOR']['id']) {
-            $response = $usuarioController->enable($_PUT['id']);
-
-            Response::sendResponse($response);
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
+            Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
         }
 
-        Response::sendResponse(new Response(400, 'Usted no tiene permisos para realizar esta acción.'));
+        $response = $usuarioController->enable($_PUT['id']);
+
+        Response::sendResponse($response);
         return $found = true;
     }
-    Response::sendResponse(new Response(400, 'El token es necesario.'));
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
