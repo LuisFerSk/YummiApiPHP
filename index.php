@@ -7,6 +7,7 @@ include_once 'controllers/equipo.controller.php';
 include_once 'controllers/funcionario.controller.php';
 include_once 'controllers/periferico.controller.php';
 include_once 'controllers/sectorial.controller.php';
+include_once 'controllers/subsector.controller.php';
 
 include_once 'models/response.model.php';
 include_once 'models/usuario.model.php';

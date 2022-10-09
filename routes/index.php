@@ -15,6 +15,7 @@ include "equipo.php";
 include "funcionario.php";
 include "periferico.php";
 include "sectorial.php";
+include "subsector.php";
 
 if (!$found) {
     $json = [

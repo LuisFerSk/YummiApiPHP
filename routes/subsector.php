@@ -1,26 +1,22 @@
-const { Router } = require('express');
+<?php
 
-const Response = require('../model/response');
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'subsector') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['subsector_table']);
+        $subsectorController = new SubsectorController($dbController);
 
-const DB = require('../data/db');
-const SubsectorData = require('../data/subsectorData');
+        $resultValidarToken = $dbController->validarToken($headers['token']);
 
-const { verificarUser } = require('../middleware/authjwt');
-const config = require('../config');
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
 
-const router = Router();
+        $response = $subsectorController->getAll();
 
-const routerBase = '/api/subsector';
-
-const db = new DB(config.DB.SUBSECTORE_TABLE);
-
-router.get(routerBase, verificarUser, (req, res) => {
-    const subsectorData = new SubsectorData(db);
-
-    subsectorData.getAll()
-        .then(result => {
-            Response.sendResponse(result, res);
-        })
-})
-
-module.exports = router;
+        Response::sendResponse($response);
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return;
+}
