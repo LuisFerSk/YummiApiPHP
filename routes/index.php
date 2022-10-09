@@ -9,26 +9,10 @@ header('Content-Type: application/json');
 $routeBase = "/YummiApiPHP/";
 $found = false;
 
-if (!function_exists('getallheaders')) {
-    function getallheaders()
-    {
-        $headers = [];
-        foreach ($_SERVER as $name => $value) {
-            if (substr($name, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-            }
-        }
-        return $headers;
-    }
-}
-
-$headers = getallheaders();
-
-parse_str(file_get_contents("php://input"), $_PUT);
-
 include "usuario.php";
 include "authentication.php";
 include "equipo.php";
+include "funcionario.php";
 
 if (!$found) {
     $json = [

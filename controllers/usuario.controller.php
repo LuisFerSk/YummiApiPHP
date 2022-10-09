@@ -12,41 +12,28 @@ class UsuarioController
     {
         $sql = 'SELECT usuarios.id, usuarios.username,usuarios.rol, estados.id AS id_estado, estados.nombre AS estado, usuarios.create_time, usuarios.update_time FROM usuarios LEFT JOIN estados ON estados.id = usuarios.estado WHERE rol = 2';
 
-        try {
-            $data = $this->dbController->execute($sql)->fetchAll(PDO::FETCH_CLASS);
-            $message = 'Los usuarios se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los equipos.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->execute($sql);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos.' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'Los usuarios se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
 
     public function getById($id)
     {
         $sql = 'SELECT usuarios.id, usuarios.username, usuarios.rol, estados.id AS id_estado, estados.nombre AS estado, usuarios.create_time, usuarios.update_time FROM usuarios LEFT JOIN estados ON estados.id = usuarios.estado WHERE usuarios.id = ?';
 
-        try {
-            $result = $this->dbController->execute($sql, [$id]);
-        } catch (PDOException $exception) {
-            $message = 'Ha sucedido un error al obtener el usuario.';
-            return new Response(400, $message, $exception);
+        $result = $this->dbController->execute($sql, [$id]);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos.' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
 
-        $message = 'El usuarioF se han obtenido correctamente.';
-        return new Response(200, $message, $result->fetchAll(PDO::FETCH_CLASS)[0]);
-    }
-
-    public function getAdmin()
-    {
-        try {
-            $result = $this->dbController->getBy('rol', 1);
-            $message = 'Los usuarios se han obtenido correctamente.';
-            return new Response(200, $message, $result);
-        } catch (PDOException $exception) {
-            $message = 'Ha sucedido un error al obtener los usuarios.';
-            return new Response(400, $message, $exception);
-        }
+        $message = 'Los usuarios se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS)[0]);
     }
 
     public function insert($usuario)
@@ -126,13 +113,8 @@ class UsuarioController
 
         $result = $this->dbController->updateNoToken($id, $dataToUpdate);
 
-        if ($result->status == 404) {
-            $message = 'No se ha encontrado al usuario.';
-            return new Response($result->status, $message);
-        }
-
         if ($result->status != 200) {
-            $message = 'No se ha podido actualizar la contraseña.';
+            $message = 'Ha sucedido un error al actualizar la contraseña: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
@@ -187,13 +169,8 @@ class UsuarioController
 
         $result = $this->dbController->deleteNoToken($this->usuarioModel->id);
 
-        if ($result->status == 404) {
-            $message = 'El usuario no existe.';
-            return new Response($result->status, $message);
-        }
-
         if ($result->status != 200) {
-            $message = 'No se ha podido eliminar el usuario.';
+            $message = 'Ha sucedido un error al eliminar el usuario: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
@@ -214,13 +191,8 @@ class UsuarioController
 
         $result = $this->dbController->updateNoToken($this->usuarioModel->id, $dataToUpdate);
 
-        if ($result->status == 404) {
-            $message = 'El usuario no existe.';
-            return new Response($result->status, $message);
-        }
-
         if ($result->status != 200) {
-            $message = 'No se ha podido deshabilitar al usuario.';
+            $message = 'Ha sucedido un error al deshabilitar el usuario: '  . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
@@ -241,20 +213,12 @@ class UsuarioController
 
         $result = $this->dbController->updateNoToken($this->usuarioModel->id, $dataToUpdate);
 
-        if ($result->status == 404) {
-            $message = 'El usuario no existe.';
-            return new Response($result->status, $message);
-        }
-
         if ($result->status != 200) {
-            $message = 'No se ha podido habilitar al usuario.';
+            $message = 'Ha sucedido un error al habilitar el usuario: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
         $message = 'Se ha habilitado al usuario correctamente.';
         return new Response(200, $message);
-    }
-    public function restoreAdmin()
-    {
     }
 }

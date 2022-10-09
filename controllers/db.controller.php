@@ -19,9 +19,11 @@ class DbController extends DataBase
 
         try {
             $statement->execute($vars);
-            return $statement;
+            $message = "Se ha ejecutado la sentencia correctamente.";
+            return new Response(200, $message, $statement);
         } catch (PDOException $exception) {
-            return $exception;
+            $message = "Ha ocurrido un error al ejecutar la sentencia.";
+            return new Response(200, $message, $exception);
         }
     }
 
@@ -35,22 +37,24 @@ class DbController extends DataBase
 
         try {
             $statement->execute();
-            return $statement->fetchAll(PDO::FETCH_CLASS);
+            $message = 'Se ha obtenido la información correctamente.';
+            return new Response(200, $message, $statement->fetchAll(PDO::FETCH_CLASS));
         } catch (PDOException $exception) {
-            return $exception;
+            $message = "Ha ocurrido un error al obtenido la información.";
+            return new Response(200, $message, $exception);
         }
     }
 
     public function getBy($column, $value)
     {
-        $sql = 'SELECT * FROM ' . $this->tableName . ' WHERE ' . $column . ' = "' . $value . '"';
+        $sql = 'SELECT * FROM ' . $this->tableName . ' WHERE ' . $column . ' = ?';
 
         $conection = $this->connect();
 
         $statement = $conection->prepare($sql);
 
         try {
-            $statement->execute([]);
+            $statement->execute([$value]);
             $message = 'Se ha obtenido la información correctamente.';
             return new Response(200, $message, $statement->fetchAll(PDO::FETCH_CLASS));
         } catch (PDOException $exception) {
@@ -61,7 +65,13 @@ class DbController extends DataBase
 
     public function getById($id)
     {
-        return $this->getBy('id', $id);
+        $result = $this->getBy('id', $id);
+
+        if ($result->status != 200) {
+            return $result;
+        }
+
+        return new Response($result->status, $result->message, $result->data[0]);
     }
 
     public function count()
@@ -74,9 +84,11 @@ class DbController extends DataBase
 
         try {
             $statement->execute();
-            return $statement->fetchAll(PDO::FETCH_CLASS);
+            $message = "Se ha obtenido el número de registros correctamente.";
+            return new Response(200, $message, $statement->fetchAll(PDO::FETCH_CLASS)[0]);
         } catch (PDOException $exception) {
-            return $exception;
+            $message = "Ha sucedido un error al obtener el número de registros.";
+            return new Response(200, $message, $exception);
         }
     }
 
@@ -375,13 +387,14 @@ class DbController extends DataBase
 
         $sql = 'SELECT id, username, rol FROM ' . Config::$DB['usuario_table'] . ' WHERE id = ?';
 
-        try {
-            $result = $this->execute($sql, [$resultDecodeToken->data->id]);
-        } catch (PDOException $exception) {
-            return new Response(400, 'No se ha podido obtener la información del token.', $exception);
+        $result = $this->execute($sql, [$resultDecodeToken->data->id]);
+        if ($result->status != 200) {
+            $message = 'No se ha podido obtener la información del token: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
 
+
         $message = 'El token es correcto';
-        return new Response(200, $message, $result->fetchAll(PDO::FETCH_CLASS)[0]);
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS)[0]);
     }
 }

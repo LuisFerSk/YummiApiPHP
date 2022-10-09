@@ -12,46 +12,52 @@ class EquipoController
     public function getAll()
     {
         $result = $this->dbController->getAll();
-        if (is_array($result)) {
-            $message = 'Los equipos se han obtenido correctamente.';
-            return new Response(200, $message, $result);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
-
-        $message = 'Ha sucedido un error al obtener los equipos.';
-        return new Response(400, $message, $result);
+        $message = 'Los equipos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data);
     }
     public function getAllBySubsector($subsector)
     {
         $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.nombre AS sectorial, subsectores.nombre AS subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id WHERE subsectores.id = ?';
 
         $result = $this->dbController->execute($sql, [$subsector]);
-        $message = 'Los equipos se han obtenido correctamente.';
-        return new Response(200, $message, $result);
 
-        $message = 'Ha sucedido un error al obtener los equipos.';
-        return new Response(400, $message, $result);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
+
+        $message = 'Los equipos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getAllBySectorial($sectorial)
     {
         $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.nombre as sectorial, subsectores.nombre as subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id WHERE sectoriales.id = ?';
 
         $result = $this->dbController->execute($sql, [$sectorial]);
-        $message = 'Los equipos se han obtenido correctamente.';
-        return new Response(200, $message, $result);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
 
-        $message = 'Ha sucedido un error al obtener los equipos.';
-        return new Response(400, $message, $result);
+        $message = 'Los equipos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getAllForExcel()
     {
         $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.nombre as sectorial, subsectores.nombre as subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id';
 
         $result = $this->dbController->execute($sql);
-        $message = 'Los equipos se han obtenido correctamente.';
-        return new Response(200, $message, $result);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
 
-        $message = 'Ha sucedido un error al obtener los equipos.';
-        return new Response(400, $message, $result);
+        $message = 'Los equipos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function insert($data, $token)
     {
@@ -83,7 +89,7 @@ class EquipoController
         $result = $this->dbController->insert($dataToInsert, $token);
 
         if ($result->status != 200) {
-            $message = 'No se ha podido registrado el equipo.';
+            $message = 'No se ha podido registrado el equipo: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
@@ -92,12 +98,12 @@ class EquipoController
         $message = 'Se ha registrado el equipo correctamente.';
 
         if ($get->status == 200) {
-            return new Response(200, $message, $get->data);
+            return new Response($result->status, $message, $get->data);
         }
 
-        $dataToInsert['id'] = $result->data->id;
+        $dataToInsert['id'] = $result->data;
 
-        return new Response(200, $message, $dataToInsert);
+        return new Response($result->status, $message, $dataToInsert);
     }
     public function update($id, $data, $token)
     {
@@ -140,38 +146,39 @@ class EquipoController
         }
 
         if ($result->status != 200) {
-            $message = 'No se ha podido actualizar la información del equipo.';
+            $message = 'No se ha podido actualizar la información del equipo: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
         $message = 'Se ha actualizado la información del equipo correctamente.';
         return new Response(200, $message);
     }
-    public function delete($id)
+    public function delete($id, $token)
     {
         $resultId = $this->equipoModel->setId($id);
         if ($resultId != 'El id es correcto.') {
             return new Response(400, $resultId);
         }
 
-        $result = $this->dbController->delete($id);
+        $result = $this->dbController->delete($id, $token);
 
-        if (!is_object($result) && is_int($result) && $result > 0) {
-            $message = 'El equipo se ha eliminado correctamente.';
-            return new Response(200, $message, $result);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al eliminar el equipo: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
 
-        $message = 'Ha sucedido un error al eliminar el equipo.';
-        return new Response(400, $message, $result);
+        $message = 'El equipo se ha eliminado correctamente.';
+        return new Response(200, $message);
     }
 
     public function count()
     {
         $result = $this->dbController->count();
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener el total de equipos: ' . $result->message;
+            return new Response($result->status, $message, $result->data);
+        }
         $message = 'El total de equipos se ha obtenido correctamente.';
-        return new Response(200, $message, $result);
-
-        $message = 'Ha sucedido un error al obtener el total de equipos.';
-        return new Response(400, $message, $result);
+        return new Response($result->status, $message, $result->data);
     }
 }

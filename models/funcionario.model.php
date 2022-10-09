@@ -18,7 +18,7 @@ class Funcionario extends Entity
         if (!isset($identificacion)) {
             return "La identificación es obligatoria.";
         }
-        if (is_string($identificacion)) {
+        if (!is_string($identificacion)) {
             return "La identificación debe ser una cadena de caracteres.";
         }
 
@@ -34,17 +34,17 @@ class Funcionario extends Entity
         $identificacionLength = strlen($identificacion);
 
         if ($identificacionLength < 8 || $identificacionLength > 11) {
-            return 'La identificación ${identificacion} debe estar entre 8 a 11 caracteres.';
+            return 'La identificación debe estar entre 8 a 11 caracteres.';
         }
         $this->identificacion = $identificacion;
-        return 'La identificación ${this.identificacion} es correcta.';
+        return 'La identificación es correcta.';
     }
     public function setNombre($nombre)
     {
         if (!isset($nombre)) {
             return "El nombre es obligatorio.";
         }
-        if (is_string($nombre)) {
+        if (!is_string($nombre)) {
             return "El nombre debe ser una cadena de caracteres.";
         }
 
@@ -58,11 +58,11 @@ class Funcionario extends Entity
         if ($nombreSerializedLength < 3 || $nombreSerializedLength > 50) {
             return "EL nombre debe ser una cadena de entre 3 y 100 caracteres.";
         }
-        if (preg_match("/^[a-zA-Z ]+$/", $nombreSerialized)) {
+        if (!preg_match("/^[a-zA-Z ]+$/", $nombreSerialized)) {
             return "El nombre solo puede contener letras.";
         }
         $this->nombre = $nombreSerialized;
-        return 'El nombre ${this.nombre} es correcto.';
+        return 'El nombre es correcto.';
     }
     public function setSectorial($idSectorial)
     {
@@ -71,7 +71,7 @@ class Funcionario extends Entity
             return 'Verifique el sectorial: ' . $idSectorial;
         }
         $this->sectorial = $idSectorial;
-        return 'El sectorial ${idSectorial} es correcto.';
+        return 'El sectorial es correcto.';
     }
     public function setSubsector($idSubsector)
     {

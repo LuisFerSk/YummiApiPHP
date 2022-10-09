@@ -4,49 +4,52 @@ include_once 'models/response.model.php';
 
 class FuncionarioController
 {
-    public function __construct($db, $funcionario = null)
+    public function __construct($dbController, $funcionarioModel = null)
     {
-        $this->db = $db;
-        $this->funcionario = $funcionario;
+        $this->dbController = $dbController;
+        $this->funcionarioModel = $funcionarioModel;
     }
     public function getAllBySubsector($subsector)
     {
         $sql = "SELECT funcionarios.id, funcionarios.identificacion, funcionarios.nombre, sectoriales.id AS id_sectorial, sectoriales.nombre AS sectorial, subsectores.id AS id_subsector, subsectores.nombre AS subsector, funcionarios.create_time, funcionarios.update_time FROM funcionarios INNER JOIN sectoriales ON funcionarios.sectorial = sectoriales.id LEFT JOIN subsectores ON funcionarios.subsector = subsectores.id WHERE subsectores.id = ?";
 
-        try {
-            $data = $this->dbController->execute($sql, [$subsector]);
-            $message = 'Los funcionarios se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los funcionarios.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->execute($sql, [$subsector]);
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los funcionarios: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'Los funcionarios se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getAllBySectorial($sectorial)
     {
         $sql = "SELECT funcionarios.id, funcionarios.identificacion, funcionarios.nombre, sectoriales.id as id_sectorial, sectoriales.nombre as sectorial, subsectores.id as id_subsector, subsectores.nombre as subsector, funcionarios.create_time, funcionarios.update_time FROM funcionarios INNER JOIN sectoriales ON funcionarios.sectorial = sectoriales.id LEFT JOIN subsectores ON funcionarios.subsector = subsectores.id WHERE sectoriales.id = ?";
 
-        try {
-            $data = $this->dbController->execute($sql, [$sectorial]);
-            $message = 'Los funcionarios se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los funcionarios.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->execute($sql, [$sectorial]);
+
+        if ($result->status != 200) {
+            $message = 'Los funcionarios se han obtenido correctamente: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'Ha sucedido un error al obtener los funcionarios.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getAll()
     {
-        $sql = "SELECT funcionarios.id, funcionarios.identificacion, funcionarios.nombre, sectoriales.id as id_sectorial, sectoriales.nombre as sectorial, subsectores.id as id_subsector, subsectores.nombre as subsector, funcionarios.create_time, funcionarios.update_time FROM funcionarios INNER JOIN sectoriales ON funcionarios.sectorial = sectoriales.id LEFT JOIN subsectores ON funcionarios.subsector = subsectores.id";
+        $sql = "SELECT funcionarios.id, funcionarios.identificacion, funcionarios.nombre, sectoriales.id AS id_sectorial, sectoriales.nombre AS sectorial, subsectores.id AS id_subsector, subsectores.nombre AS subsector, funcionarios.create_time, funcionarios.update_time FROM funcionarios INNER JOIN sectoriales ON funcionarios.sectorial = sectoriales.id LEFT JOIN subsectores ON funcionarios.subsector = subsectores.id";
 
-        try {
-            $data = $this->dbController->execute($sql);
-            $message = 'Los funcionarios se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los funcionarios.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->execute($sql);
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los funcionarios: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'Los funcionarios se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getActived()
     {
@@ -72,28 +75,38 @@ class FuncionarioController
             return new Response(400, $message, $error);
         }
     }
-    public function insert($funcionario)
+    public function insert($funcionario, $token)
     {
-        $resultSetFunctionario = $this->funcionario->setFuncionario($funcionario);
+        $resultSetFunctionario = $this->funcionarioModel->setFuncionario($funcionario);
         if ($resultSetFunctionario != 'El funcionario es correcto.') {
             return new Response(400, $resultSetFunctionario);
         }
 
         $dataToInsert = [
-            'identificacion' => $this->funcionario->identificacion,
-            'nombre' => $this->funcionario->nombre,
-            'sectorial' => $this->funcionario->sectorial,
-            'subsector' => $this->funcionario->subsector
+            'identificacion' => $this->funcionarioModel->identificacion,
+            'nombre' => $this->funcionarioModel->nombre,
+            'sectorial' => $this->funcionarioModel->sectorial,
+            'subsector' => $this->funcionarioModel->subsector
         ];
 
-        try {
-            $result = $this->dbController->insert($dataToInsert);
-            $message = 'Se ha insertado el funcionario correctamente.';
-            return new Response(200, $message, $result);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al insertar el funcionario funcionarios.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->insert($dataToInsert, $token);
+
+        if ($result->status != 200) {
+            $message = 'No se ha podido registrado el funcionario: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $get = $this->dbController->getById($result->data);
+
+        $message = 'Se ha registrado el funcionario correctamente.';
+
+        if ($get->status == 200) {
+            return new Response($result->status, $message, $get->data);
+        }
+
+        $dataToInsert['id'] = $result->data;
+
+        return new Response($result->status, $message, $dataToInsert);
     }
     public function update($id, $funcionario)
     {
