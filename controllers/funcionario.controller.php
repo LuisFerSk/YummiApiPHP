@@ -66,14 +66,15 @@ class FuncionarioController
     {
         $sql = "SELECT funcionarios.id, funcionarios.identificacion, funcionarios.nombre, sectoriales.id as id_sectorial, sectoriales.nombre as sectorial, subsectores.id as id_subsector, subsectores.nombre as subsector, funcionarios.create_time, funcionarios.update_time FROM funcionarios INNER JOIN sectoriales ON funcionarios.sectorial = sectoriales.id LEFT JOIN subsectores ON funcionarios.subsector = subsectores.id WHERE funcionarios.id = ?";
 
-        try {
-            $data = $this->dbController->execute($sql, [$id]);
-            $message = 'Los funcionarios se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los funcionarios.';
-            return new Response(400, $message, $error);
+        $result = $this->dbController->execute($sql, [$id]);
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener el funcionario: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'El funcionario se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS)[0]);
     }
     public function insert($funcionario, $token)
     {
@@ -91,22 +92,25 @@ class FuncionarioController
 
         $result = $this->dbController->insert($dataToInsert, $token);
 
+        if ($result->status == 409) {
+            $message = 'No se ha podido registrado el funcionario: la identificación ya se encuentra registrada';
+            return new Response($result->status, $message, $result->data);
+        }
+
         if ($result->status != 200) {
             $message = 'No se ha podido registrado el funcionario: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
-        $get = $this->dbController->getById($result->data);
+        $resultGet = $this->getById($result->data);
 
-        $message = 'Se ha registrado el funcionario correctamente.';
-
-        if ($get->status == 200) {
-            return new Response($result->status, $message, $get->data);
+        if ($resultGet->status != 200) {
+            $message = 'Se ha registrado el funcionario pero, ' . strtolower($resultGet->message);
+            return new Response($result->status, $message, $resultGet->data);
         }
 
-        $dataToInsert['id'] = $result->data;
-
-        return new Response($result->status, $message, $dataToInsert);
+        $message = 'Se ha registrado el funcionario correctamente.';
+        return new Response($result->status, $message, $resultGet->data);
     }
     public function update($id, $funcionario, $token)
     {
@@ -140,8 +144,15 @@ class FuncionarioController
             return new Response($result->status, $message, $result->data);
         }
 
+        $resultGet = $this->getById($result->data);
+
+        if ($resultGet->status != 200) {
+            $message = 'Se ha registrado el funcionario pero, ' . strtolower($resultGet->message);
+            return new Response($result->status, $message, $resultGet->data);
+        }
+
         $message = 'Se ha actualizado la información del funcionario correctamente.';
-        return new Response(200, $message);
+        return new Response(200, $message, $resultGet->data);
     }
     public function delete($id, $token)
     {
