@@ -60,7 +60,7 @@ class UsuarioController
             return new Response($result->status, $message, $result->data);
         }
 
-        $get = $this->dbController->getById($result->data);
+        $get = $this->getById($result->data);
 
         $message = 'Se ha registrado al usuario correctamente.';
 
@@ -196,8 +196,15 @@ class UsuarioController
             return new Response($result->status, $message, $result->data);
         }
 
+        $resultGet = $this->getById($result->data);
+
+        if ($resultGet->status != 200) {
+            $message = 'Ha sucedido un error al deshabilitar el usuario: '  . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
+
         $message = 'Se ha deshabilitado al usuario correctamente.';
-        return new Response(200, $message);
+        return new Response($resultGet->status, $message, $resultGet->data);
     }
     public function enable($id)
     {
@@ -218,7 +225,14 @@ class UsuarioController
             return new Response($result->status, $message, $result->data);
         }
 
+        $resultGet = $this->getById($result->data);
+
+        if ($resultGet->status != 200) {
+            $message = 'Ha sucedido un error al deshabilitar el usuario: '  . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
+
         $message = 'Se ha habilitado al usuario correctamente.';
-        return new Response(200, $message);
+        return new Response($resultGet->status, $message, $resultGet->data);
     }
 }

@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBas
     Response::sendResponse(new Response(401, 'El token es necesario.'));
     return $found = true;
 }
-if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario') {
+if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario/password') {
     if (isset($headers['token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
             return $found = true;
         }
 
-        if ($resultValidarToken->data->rol == Config::$ROLES['ADMINISTRADOR']['id']) {
+        if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
             Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
         }
