@@ -201,6 +201,11 @@ class DbController extends DataBase
             $conection->rollBack();
 
             $message = 'Ha sucedido un error al insertar los datos.';
+
+            if ($exception->errorInfo[1] == 1062) {
+                return new Response(409, $message, $exception);
+            }
+
             return new Response(400, $message, $exception);
         }
 
