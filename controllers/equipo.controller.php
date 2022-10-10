@@ -35,6 +35,19 @@ class EquipoController
         $message = 'Los equipos se han obtenido correctamente.';
         return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
+    public function getById($id)
+    {
+        $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.nombre as sectorial, subsectores.nombre as subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id WHERE equipos.id = ?';
+
+        $result = $this->dbController->execute($sql, [$id]);
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
+        }
+
+        $message = 'Los equipos se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS)[0]);
+    }
     public function getAllBySectorial($sectorial)
     {
         $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.nombre as sectorial, subsectores.nombre as subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id WHERE sectoriales.id = ?';
@@ -152,8 +165,15 @@ class EquipoController
             return new Response($result->status, $message, $result->data);
         }
 
+        $resultGet = $this->getById($result->data);
+
+        if ($resultGet->status != 200) {
+            $message = 'Se ha registrado el funcionario pero, ' . strtolower($resultGet->message);
+            return new Response($result->status, $message, $resultGet->data);
+        }
+
         $message = 'Se ha actualizado la información del equipo correctamente.';
-        return new Response(200, $message);
+        return new Response($resultGet->status, $message, $resultGet->data);
     }
     public function delete($id, $token)
     {
