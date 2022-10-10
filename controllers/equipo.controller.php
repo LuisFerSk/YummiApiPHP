@@ -11,13 +11,15 @@ class EquipoController
     }
     public function getAll()
     {
-        $result = $this->dbController->getAll();
+        $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.id AS id_sectorial, sectoriales.nombre AS sectorial, subsectores.nombre AS subsector, subsectores.id AS id_subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id';
+
+        $result = $this->dbController->execute($sql);
         if ($result->status != 200) {
             $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
         $message = 'Los equipos se han obtenido correctamente.';
-        return new Response($result->status, $message, $result->data);
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getAllBySubsector($subsector)
     {
