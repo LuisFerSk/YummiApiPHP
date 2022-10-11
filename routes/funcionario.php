@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
         return $found = true;
     }
     Response::sendResponse(new Response(401, 'El token es necesario.'));
-    return;
+    return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario') {
     if (isset($headers['token'])) {
@@ -103,5 +103,113 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
         return $found = true;
     }
     Response::sendResponse(new Response(401, 'El token es necesario.'));
-    return;
+    return $found = true;
+}
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/excel/all') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['funcionario_table']);
+        $funcionarioController = new FuncionarioController($dbController);
+
+        $resultValidarToken = $dbController->validarToken($headers['token']);
+
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
+
+        $response = $funcionarioController->getAll();
+
+        if ($response->status != 200) {
+            $message = 'No se ha podido generar el Excel de funcionarios: ' . strtolower($response->message);
+            Response::sendResponse(new Response($response->status, $message, $response->data));
+        }
+
+        $dataForExcel = Excel::normalizeQueryData($response->data);
+
+        $nameFileExcel = 'funcionario';
+
+        try {
+            Excel::generateExcel($nameFileExcel, $dataForExcel);
+        } catch (Exception $exception) {
+            $message = 'No se ha podido generar el Excel de funcionarios.';
+            Response::sendResponse(new Response(500, $message, $exception));
+            return $found = true;
+        }
+
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return $found = true;
+}
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/excel/by-sectorial') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['funcionario_table']);
+        $funcionarioController = new FuncionarioController($dbController);
+
+        $resultValidarToken = $dbController->validarToken($headers['token']);
+
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
+
+        $response = $funcionarioController->getAllBySectorial($headers['id']);
+
+        if ($response->status != 200) {
+            $message = 'No se ha podido generar el Excel de funcionarios: ' . strtolower($response->message);
+            Response::sendResponse(new Response($response->status, $message, $response->data));
+        }
+
+        $dataForExcel = Excel::normalizeQueryData($response->data);
+
+        $nameFileExcel = 'funcionario';
+
+        try {
+            Excel::generateExcel($nameFileExcel, $dataForExcel);
+        } catch (Exception $exception) {
+            $message = 'No se ha podido generar el Excel de funcionarios.';
+            Response::sendResponse(new Response(500, $message, $exception));
+            return $found = true;
+        }
+
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return $found = true;
+}
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/excel/by-subsector') {
+    if (isset($headers['token'])) {
+        $dbController = new DbController(Config::$DB['funcionario_table']);
+        $funcionarioController = new FuncionarioController($dbController);
+
+        $resultValidarToken = $dbController->validarToken($headers['token']);
+
+        if ($resultValidarToken->status != 200) {
+            Response::sendResponse($resultValidarToken);
+            return $found = true;
+        }
+
+        $response = $funcionarioController->getAllBySubsector($headers['id']);
+
+        if ($response->status != 200) {
+            $message = 'No se ha podido generar el Excel de funcionarios: ' . strtolower($response->message);
+            Response::sendResponse(new Response($response->status, $message, $response->data));
+        }
+
+        $dataForExcel = Excel::normalizeQueryData($response->data);
+
+        $nameFileExcel = 'funcionario';
+
+        try {
+            Excel::generateExcel($nameFileExcel, $dataForExcel);
+        } catch (Exception $exception) {
+            $message = 'No se ha podido generar el Excel de funcionarios.';
+            Response::sendResponse(new Response(500, $message, $exception));
+            return $found = true;
+        }
+
+        return $found = true;
+    }
+    Response::sendResponse(new Response(401, 'El token es necesario.'));
+    return $found = true;
 }

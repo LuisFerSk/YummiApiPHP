@@ -51,17 +51,6 @@ class FuncionarioController
         $message = 'Los funcionarios se han obtenido correctamente.';
         return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
-    public function getActived()
-    {
-        try {
-            $data = $this->dbController->getBy('estado', 1);
-            $message = 'Los funcionarios se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los funcionarios.';
-            return new Response(400, $message, $error);
-        }
-    }
     public function getById($id)
     {
         $sql = "SELECT funcionarios.id, funcionarios.identificacion, funcionarios.nombre, sectoriales.id as id_sectorial, sectoriales.nombre as sectorial, subsectores.id as id_subsector, subsectores.nombre as subsector, funcionarios.create_time, funcionarios.update_time FROM funcionarios INNER JOIN sectoriales ON funcionarios.sectorial = sectoriales.id LEFT JOIN subsectores ON funcionarios.subsector = subsectores.id WHERE funcionarios.id = ?";
