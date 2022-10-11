@@ -36,16 +36,17 @@ class PerifericoController
     }
     public function getAll()
     {
-        $sql = "SELECT perifericos.id,tipo_dispositivos.nombre AS tipo_dispositivo, tipo_dispositivos.id AS id_tipo_dispositivo, perifericos.referenciaPeriferico, perifericos.numeroSerial, perifericos.estado, perifericos.observaciones, perifericos.create_time, perifericos.update_time FROM perifericos LEFT JOIN tipo_dispositivos ON perifericos.tipo_dispositivo = tipo_dispositivos.id";
+        $sql = "SELECT perifericos.id,tipo_dispositivos.nombre AS tipo_dispositivo, tipo_dispositivos.id AS id_tipo_dispositivo, perifericos.referenciaPeriferico, perifericos.numeroSerial, estados.nombre AS estado, estados.id AS id_estado, perifericos.observaciones, perifericos.create_time, perifericos.update_time FROM perifericos LEFT JOIN tipo_dispositivos ON perifericos.tipo_dispositivo = tipo_dispositivos.id LEFT JOIN estados ON estados.id = perifericos.estado";
 
-        $result = $this->dbController->getAll();
+        $result = $this->dbController->execute($sql);
 
         if ($result->status != 200) {
             $message = 'Ha sucedido un error al obtener los perifericos: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
+
         $message = 'Los perifericos se han obtenido correctamente.';
-        return new Response($result->status, $message, $result->data);
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS));
     }
     public function getActived()
     {
@@ -60,15 +61,17 @@ class PerifericoController
     }
     public function getById($id)
     {
-        $sql = "SELECT perifericos.id,tipo_dispositivos.nombre AS tipo_dispositivo, tipo_dispositivos.id AS id_tipo_dispositivo, perifericos.referenciaPeriferico, perifericos.numeroSerial, perifericos.estado, perifericos.observaciones, perifericos.create_time, perifericos.update_time FROM perifericos LEFT JOIN tipo_dispositivos ON perifericos.tipo_dispositivo = tipo_dispositivos.id WHERE perifericos.id = ?";
-        try {
-            $data = $this->dbController->execute($sql, [$id]);
-            $message = 'Los equipos se han obtenido correctamente.';
-            return new Response(200, $message, $data);
-        } catch (Exception $error) {
-            $message = 'Ha sucedido un error al obtener los equipos.';
-            return new Response(400, $message, $error);
+        $sql = "SELECT perifericos.id,tipo_dispositivos.nombre AS tipo_dispositivo, tipo_dispositivos.id AS id_tipo_dispositivo, perifericos.referenciaPeriferico, perifericos.numeroSerial, estados.nombre AS estado, estados.id AS id_estado, perifericos.observaciones, perifericos.create_time, perifericos.update_time FROM perifericos LEFT JOIN tipo_dispositivos ON perifericos.tipo_dispositivo = tipo_dispositivos.id LEFT JOIN estados ON estados.id = perifericos.estado WHERE perifericos.id = ?";
+
+        $result = $this->dbController->execute($sql, [$id]);
+
+        if ($result->status != 200) {
+            $message = 'Ha sucedido un error al obtener el periférico: ' . strtolower($result->message);
+            return new Response($result->status, $message, $result->data);
         }
+
+        $message = 'El periférico se han obtenido correctamente.';
+        return new Response($result->status, $message, $result->data->fetchAll(PDO::FETCH_CLASS)[0]);
     }
     public function insert($periferico, $token)
     {
@@ -88,21 +91,19 @@ class PerifericoController
         $result = $this->dbController->insert($dataToInsert, $token);
 
         if ($result->status != 200) {
-            $message = 'No se ha podido registrado el periferico: ' . strtolower($result->message);
+            $message = 'No se ha podido registrado el periférico: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
 
-        $get = $this->dbController->getById($result->data);
+        $resultGet = $this->getById($result->data);
 
-        $message = 'Se ha registrado el periferico correctamente.';
-
-        if ($get->status == 200) {
-            return new Response($result->status, $message, $get->data);
+        if ($resultGet->status != 200) {
+            $message = 'Se ha registrado el periferico pero, ' . strtolower($resultGet->message);
+            return new Response($result->status, $message, $resultGet->data);
         }
 
-        $dataToInsert['id'] = $result->data;
-
-        return new Response($result->status, $message, $dataToInsert);
+        $message = 'Se ha registrado la información del periferico correctamente.';
+        return new Response(200, $message, $resultGet->data);
     }
     public function update($id, $periferico, $token)
     {
@@ -137,8 +138,15 @@ class PerifericoController
             return new Response($result->status, $message, $result->data);
         }
 
+        $resultGet = $this->getById($result->data);
+
+        if ($resultGet->status != 200) {
+            $message = 'Se ha actualizado el periferico pero, ' . strtolower($resultGet->message);
+            return new Response($result->status, $message, $resultGet->data);
+        }
+
         $message = 'Se ha actualizado la información del periferico correctamente.';
-        return new Response(200, $message);
+        return new Response(200, $message, $resultGet->data);
     }
     public function delete($id, $token)
     {
