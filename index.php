@@ -23,6 +23,7 @@ include_once 'controllers/periferico.controller.php';
 include_once 'controllers/sectorial.controller.php';
 include_once 'controllers/subsector.controller.php';
 include_once 'controllers/tipoDispositivo.controller.php';
+include_once 'controllers/log.controller.php';
 
 include_once 'models/response.model.php';
 include_once 'models/usuario.model.php';

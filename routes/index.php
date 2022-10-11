@@ -11,6 +11,7 @@ include "periferico.php";
 include "sectorial.php";
 include "subsector.php";
 include "tipoDispositivo.php";
+include "log.php";
 
 if (!$found) {
     $json = [

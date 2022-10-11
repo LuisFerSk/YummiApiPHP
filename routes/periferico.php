@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
+
         if ($resultValidarToken->data->rol != Config::$ROLES['ADMINISTRADOR']['id']) {
             Response::sendResponse(new Response(403, 'Usted no tiene permisos para realizar esta acción.'));
             return $found = true;
