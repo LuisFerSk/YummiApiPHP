@@ -23,7 +23,7 @@ class DbController extends DataBase
             return new Response(200, $message, $statement);
         } catch (PDOException $exception) {
             $message = "Ha ocurrido un error al ejecutar la sentencia.";
-            return new Response(200, $message, $exception);
+            return new Response(400, $message, $exception);
         }
     }
 
