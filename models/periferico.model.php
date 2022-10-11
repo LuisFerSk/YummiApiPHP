@@ -77,24 +77,27 @@ class Periferico extends Entity
     public function setObservaciones($observaciones)
     {
         if (!isset($observaciones)) {
-            if (is_string($observaciones)) {
-                return 'La observación no es valida, debe ser una cadena de caracteres.';
-            }
-
-            $observacionesSerialized = trim($observaciones);
-
-            $observacionesSerializedLength = strlen($observacionesSerialized);
-
-            if ($observacionesSerializedLength < 1) {
-                return 'La observación no puede ser una cadena vacía o de espacios.';
-            }
-            if ($observacionesSerializedLength > 100) {
-                return 'La observación no puede tener más de 100 caracteres.';
-            }
-            $this->observaciones = $observacionesSerialized;
+            $this->observaciones = $observaciones;
             return 'La observación es correcta.';
         }
-        $this->observaciones = $observaciones;
+
+        if (is_string($observaciones)) {
+            return 'La observación no es valida, debe ser una cadena de caracteres.';
+        }
+
+        $observacionesSerialized = trim($observaciones);
+
+        $observacionesSerializedLength = strlen($observacionesSerialized);
+
+        if ($observacionesSerializedLength < 1) {
+            return 'La observación no puede ser una cadena vacía o de espacios.';
+        }
+
+        if ($observacionesSerializedLength > 100) {
+            return 'La observación no puede tener más de 100 caracteres.';
+        }
+
+        $this->observaciones = $observacionesSerialized;
         return 'La observación es correcta.';
     }
     public function setPeriferico($periferico)
