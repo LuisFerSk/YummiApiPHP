@@ -1,41 +1,49 @@
 <?php
+
+require_once "vendor/autoload.php";
+
+use PhpOffice\PhpSpreadsheet\{Spreadsheet, IOFactory, Writer\Xlsx};
+
 class Excel
 {
-}
-require_once 'conn.php';
+    static public function normalizeQueryData($queryData)
+    {
+        $normalizedData = [];
 
-$output = "";
+        $array = [];
 
-if (isset($_POST['export'])) {
-    $output .= "
-			<table>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Nombre</th>
-						<th>Apellido</th>
-						<th>Direccion</th>
-					</tr>
-				<tbody>
-		";
+        foreach ($queryData[0] as $key => $value) {
+            array_push($array, $key);
+        }
 
-    while ($fetch = []) {
+        array_push($normalizedData, $array);
 
-        $output .= "
-					<tr>
-						<td>" . $fetch['mem_id'] . "</td>
-						<td>" . $fetch['firstname'] . "</td>
-						<td>" . $fetch['lastname'] . "</td>
-						<td>" . $fetch['address'] . "</td>
-					</tr>
-		";
+        foreach ($queryData as $data) {
+            $array = [];
+            foreach ($data as $value) {
+                array_push($array, $value);
+            }
+            array_push($normalizedData, $array);
+        }
+
+        return $normalizedData;
     }
+    static public function generateExcel($nameFile, $data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($nameFile);
 
-    $output .= "
-				</tbody>
-				
-			</table>
-		";
+        $sheet->fromArray($data, null, 'A1');
 
-    echo $output;
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($nameFile . '.xlsx');
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $nameFile . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+    }
 }
