@@ -8,23 +8,19 @@ class DataBase
 {
     public function __construct()
     {
-        $this->host = 'localhost';
-        $this->database = "Yummi";
-        $this->user = "root";
-        $this->password = '12345678';
+        $this->host = 'localhost:3306';
+        $this->database = "valledup_itecnologico";
+        $this->user = "valledup";
+        $this->password = 'BDfvGyX2TSXEvyfa2L';
     }
     public function connect()
     {
         try {
             $link = new PDO(
-                'mysql:host=' . $this->host . ';dbname=' . $this->database,
+                'mysql:host=' . $this->host . ';dbname=' . $this->database. ';charset=utf8',
                 $this->user,
                 $this->password
             );
-
-            $link->exec('set names uft8');
-
-            $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $exception) {
             die("Error: " . $exception->getMessage());
         }

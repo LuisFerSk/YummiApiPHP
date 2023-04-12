@@ -1,11 +1,11 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $perifericoController = new PerifericoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -13,60 +13,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
         }
 
         $response = $perifericoController->getAll();
-
+        
         Response::sendResponse($response);
+
         return $found = true;
     }
     Response::sendResponse(new Response(401, 'El token es necesario.'));
-    return;
+    return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $perifericoModel = new Periferico();
         $perifericoController = new PerifericoController($dbController, $perifericoModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $perifericoController->insert($_POST, $headers['token']);
+        $response = $perifericoController->insert($_POST, $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
     }
     Response::sendResponse(new Response(401, 'El token es obligatorio.'));
+    return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $perifericoModel = new Periferico();
         $perifericoController = new PerifericoController($dbController, $perifericoModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $perifericoController->update($_PUT['id'], $_PUT, $headers['token']);
+        $response = $perifericoController->update($_PUT['id'], $_PUT, $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
     }
     Response::sendResponse(new Response(401, 'El token es obligatorio.'));
+    return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $Periferico = new Periferico();
         $perifericoController = new PerifericoController($dbController, $Periferico);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -78,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
             return $found = true;
         }
 
-        $response = $perifericoController->delete($_PUT['id'], $headers['token']);
+        $response = $perifericoController->delete($_PUT['id'], $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -87,11 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico/count') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $perifericoController = new PerifericoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -104,15 +107,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
         return $found = true;
     }
     Response::sendResponse(new Response(401, 'El token es necesario.'));
-    return;
+    return $found = true;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico/excel/all') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $perifericoController = new PerifericoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -151,18 +154,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'periferico/excel/by-tipo-dispositivo') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['periferico_table']);
         $perifericoController = new PerifericoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $perifericoController->getAllByTipo($headers['id']);
+        $response = $perifericoController->getAllByTipo($headers['Id']);
 
         if ($response->status != 200) {
             $message = 'No se ha podido generar el Excel de periféricos: ' . strtolower($response->message);

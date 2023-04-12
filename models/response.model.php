@@ -15,6 +15,7 @@ class Response
             "message" => $response->message,
             "data" => $response->data
         ];
+
         echo json_encode($json, http_response_code($response->status));
     }
 }

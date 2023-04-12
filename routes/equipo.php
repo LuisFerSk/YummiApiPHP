@@ -1,11 +1,11 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoController = new EquipoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -21,19 +21,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoModel = new Equipo();
         $equipoController = new EquipoController($dbController, $equipoModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $equipoController->insert($_POST, $headers['token']);
+        $response = $equipoController->insert($_POST, $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -42,19 +42,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBas
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoModel = new Equipo();
         $equipoController = new EquipoController($dbController, $equipoModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $equipoController->update($_PUT['id'], $_PUT, $headers['token']);
+        $response = $equipoController->update($_PUT['id'], $_PUT, $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
     Response::sendResponse(new Response(401, 'El token es obligatorio.'));
 }
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoModel = new Equipo();
         $equipoController = new EquipoController($dbController, $equipoModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
             return $found = true;
         }
 
-        $response = $equipoController->delete($_PUT['id'], $headers['token']);
+        $response = $equipoController->delete($_PUT['id'], $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -88,11 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo/count') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoController = new EquipoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -108,11 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo/excel/all') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoController = new EquipoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -151,18 +151,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo/excel/by-sectorial') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoController = new EquipoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $equipoController->getAllBySectorial($headers['id']);
+        $response = $equipoController->getAllBySectorial($headers['Id']);
 
         if ($response->status != 200) {
             $message = 'No se ha podido generar el Excel de equipos: ' . strtolower($response->message);
@@ -194,18 +194,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'equipo/excel/by-subsector') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['equipo_table']);
         $equipoController = new EquipoController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $equipoController->getAllBySubsector($headers['id']);
+        $response = $equipoController->getAllBySubsector($headers['Id']);
 
         if ($response->status != 200) {
             $message = 'No se ha podido generar el Excel de equipos: ' . strtolower($response->message);

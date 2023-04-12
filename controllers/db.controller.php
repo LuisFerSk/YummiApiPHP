@@ -41,7 +41,7 @@ class DbController extends DataBase
             return new Response(200, $message, $statement->fetchAll(PDO::FETCH_CLASS));
         } catch (PDOException $exception) {
             $message = "Ha ocurrido un error al obtenido la información.";
-            return new Response(200, $message, $exception);
+            return new Response(400, $message, $exception);
         }
     }
 
@@ -88,7 +88,7 @@ class DbController extends DataBase
             return new Response(200, $message, $statement->fetchAll(PDO::FETCH_CLASS)[0]);
         } catch (PDOException $exception) {
             $message = "Ha sucedido un error al obtener el número de registros.";
-            return new Response(200, $message, $exception);
+            return new Response(400, $message, $exception);
         }
     }
 

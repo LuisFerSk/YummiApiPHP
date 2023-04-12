@@ -37,9 +37,10 @@ class EquipoController
     }
     public function getById($id)
     {
-        $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.nombre as sectorial, subsectores.nombre as subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id WHERE equipos.id = ?';
+        $sql = 'SELECT equipos.id, equipos.idEquipo, equipos.tipo, equipos.referencia, equipos.numeroSerialCPU, equipos.numeroSerialMonitor, equipos.numeroSerialTeclado, equipos.numeroSerialMouse, equipos.direccionIP, equipos.sistemaOperativo, equipos.tipoProcesador, equipos.discoDuro, equipos.capacidad, equipos.espacioUsado, equipos.memoria, sectoriales.id AS id_sectorial, sectoriales.nombre AS sectorial, subsectores.nombre AS subsector, subsectores.id AS id_subsector, equipos.softwareInstalado, equipos.create_time, equipos.update_time FROM equipos INNER JOIN sectoriales ON equipos.sectorial = sectoriales.id LEFT JOIN subsectores ON equipos.subsector = subsectores.id WHERE equipos.id = ?';
 
         $result = $this->dbController->execute($sql, [$id]);
+
         if ($result->status != 200) {
             $message = 'Ha sucedido un error al obtener los equipos: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
@@ -95,17 +96,15 @@ class EquipoController
             return new Response($result->status, $message, $result->data);
         }
 
-        $get = $this->dbController->getById($result->data);
+        $resultGet = $this->getById($result->data);
 
-        $message = 'Se ha registrado el equipo correctamente.';
-
-        if ($get->status == 200) {
-            return new Response($result->status, $message, $get->data);
+        if ($resultGet->status != 200) {
+            $message = 'Se ha registrado el equipo pero, ' . strtolower($resultGet->message);
+            return new Response($result->status, $message, $resultGet->data);
         }
-
-        $dataToInsert['id'] = $result->data;
-
-        return new Response($result->status, $message, $dataToInsert);
+        
+        $message = 'Se ha registrado el equipo correctamente.';
+        return new Response($result->status, $message, $resultGet->data);
     }
     public function update($id, $data, $token)
     {

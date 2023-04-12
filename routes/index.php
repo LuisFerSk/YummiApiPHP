@@ -1,6 +1,6 @@
 <?php
 
-$routeBase = "/YummiApiPHP/";
+$routeBase = "/api/";
 $found = false;
 
 include "usuario.php";

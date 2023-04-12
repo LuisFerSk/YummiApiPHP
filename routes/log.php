@@ -1,11 +1,11 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'log/excel') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['log_table']);
         $logController = new LogController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);

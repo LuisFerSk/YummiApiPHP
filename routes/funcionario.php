@@ -1,11 +1,11 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioController = new FuncionarioController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -21,19 +21,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioModel = new Funcionario();
         $funcionarioController = new FuncionarioController($dbController, $funcionarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $funcionarioController->insert($_POST, $headers['token']);
+        $response = $funcionarioController->insert($_POST, $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -41,19 +41,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBas
     Response::sendResponse(new Response(401, 'El token es obligatorio.'));
 }
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioModel = new Funcionario();
         $funcionarioController = new FuncionarioController($dbController, $funcionarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $funcionarioController->update($_PUT['id'], $_PUT, $headers['token']);
+        $response = $funcionarioController->update($_PUT['id'], $_PUT, $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -61,12 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
     Response::sendResponse(new Response(401, 'El token es obligatorio.'));
 }
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $Funcionario = new Funcionario();
         $funcionarioController = new FuncionarioController($dbController, $Funcionario);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
             return $found = true;
         }
 
-        $response = $funcionarioController->delete($_PUT['id'], $headers['token']);
+        $response = $funcionarioController->delete($_PUT['id'], $headers['Token']);
 
         Response::sendResponse($response);
         return $found = true;
@@ -86,11 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/count') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioController = new FuncionarioController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -106,11 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/excel/all') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioController = new FuncionarioController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -142,18 +142,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/excel/by-sectorial') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioController = new FuncionarioController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $funcionarioController->getAllBySectorial($headers['id']);
+        $response = $funcionarioController->getAllBySectorial($headers['Id']);
 
         if ($response->status != 200) {
             $message = 'No se ha podido generar el Excel de funcionarios: ' . strtolower($response->message);
@@ -178,18 +178,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'funcionario/excel/by-subsector') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['funcionario_table']);
         $funcionarioController = new FuncionarioController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
             return $found = true;
         }
 
-        $response = $funcionarioController->getAllBySubsector($headers['id']);
+        $response = $funcionarioController->getAllBySubsector($headers['Id']);
 
         if ($response->status != 200) {
             $message = 'No se ha podido generar el Excel de funcionarios: ' . strtolower($response->message);

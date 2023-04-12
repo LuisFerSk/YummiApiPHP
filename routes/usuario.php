@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_URI'] == $routeBase . 'usuario/restore_admin') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioController = new UsuarioController($dbController);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -38,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario/me') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioController = new UsuarioController($dbController);
 
-        $resultDecodedToken = $dbController->validarToken($headers['token']);
+        $resultDecodedToken = $dbController->validarToken($headers['Token']);
 
         if ($resultDecodedToken->status != 200) {
             Response::sendResponse($resultDecodedToken);
@@ -65,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $_SERVER['REQUEST_URI'] == $routeBase
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario/me/password') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
         $usuarioController = new UsuarioController($dbController, $usuarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -87,12 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
         $usuarioController = new UsuarioController($dbController, $usuarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -113,12 +113,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SERVER['REQUEST_URI'] == $routeBas
     return $found = true;
 }
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario/password') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
         $usuarioController = new UsuarioController($dbController, $usuarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -140,12 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
         $usuarioController = new UsuarioController($dbController, $usuarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -166,12 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE' && $_SERVER['REQUEST_URI'] == $routeB
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario/disable') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
         $usuarioController = new UsuarioController($dbController, $usuarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);
@@ -193,12 +193,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'PUT' && $_SERVER['REQUEST_URI'] == $routeBase . 'usuario/enable') {
-    if (isset($headers['token'])) {
+    if (isset($headers['Token'])) {
         $dbController = new DbController(Config::$DB['usuario_table']);
         $usuarioModel = new Usuario();
         $usuarioController = new UsuarioController($dbController, $usuarioModel);
 
-        $resultValidarToken = $dbController->validarToken($headers['token']);
+        $resultValidarToken = $dbController->validarToken($headers['Token']);
 
         if ($resultValidarToken->status != 200) {
             Response::sendResponse($resultValidarToken);

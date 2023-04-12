@@ -13,6 +13,7 @@ class TipoDispositivoController
             $message = 'Ha sucedido un error al obtener los tipo de dispositivos: ' . strtolower($result->message);
             return new Response($result->status, $message, $result->data);
         }
+        
         $message = 'Los tipo de dispositivos se han obtenido correctamente.';
         return new Response($result->status, $message, $result->data);
     }
